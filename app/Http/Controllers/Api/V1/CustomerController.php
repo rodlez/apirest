@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Api\V1;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 // Model
 use App\Models\Customer;
 // Request
-use App\Http\Requests\StoreCustomerRequest;
-use App\Http\Requests\UpdateCustomerRequest;
+use App\Http\Requests\V1\StoreCustomerRequest;
 // Controller
 use App\Http\Controllers\Controller;
 // Resources
@@ -54,10 +54,12 @@ class CustomerController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     * @param \Illuminate\Http\Request
+     * @return \Illuminate\Http\Response
      */
     public function store(StoreCustomerRequest $request)
     {
-        //
+        return new CustomerResource(Customer::create($request->all()));
     }
 
     /**
