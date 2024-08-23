@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use Illuminate\Http\Request;
+
 // Model
 use App\Models\Invoice;
 // Request
@@ -12,17 +14,26 @@ use App\Http\Controllers\Controller;
 // Resources
 use App\Http\Resources\V1\InvoiceCollection;
 use App\Http\Resources\V1\InvoiceResource;
+// Filters
+use App\Filters\V1\InvoicesFilter;
 
 class InvoiceController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //return Invoice::all();
-        // without the need of define the InvoiceCollection will take the format defined in InvoiceResource
-        return new InvoiceCollection(Invoice::paginate());
+        $filter = new InvoicesFilter();
+        $queryItems = $filter->transform($request);     // [['column', 'operator', 'value']]
+
+        // check if the query is empty
+        if (count($queryItems) === 0) {
+            return new InvoiceCollection(Invoice::paginate());
+        } else {
+            $invoices = Invoice::where($queryItems)->paginate();
+            return new InvoiceCollection($invoices->appends($request->query()));
+        }
     }
 
     /**

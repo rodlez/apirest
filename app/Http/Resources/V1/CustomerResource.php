@@ -23,8 +23,9 @@ class CustomerResource extends JsonResource
             'address' => $this->address,
             'city' => $this->city,
             'state' => $this->state,
-            'postalCode' => $this->postal_code  // use postalCode instead of postal_code to fit the convention to represent the JSON object as result
-
+            'postalCode' => $this->postal_code,  // use postalCode instead of postal_code to fit the convention to represent the JSON object as result
+            // invoices in case the includeInvoices param is true
+            'invoices' => InvoiceResource::collection($this->whenLoaded('invoices'))
         ];
     }
 }
