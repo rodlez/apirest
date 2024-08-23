@@ -9,6 +9,7 @@ use Illuminate\Http\Response;
 use App\Models\Customer;
 // Request
 use App\Http\Requests\V1\StoreCustomerRequest;
+use App\Http\Requests\V1\UpdateCustomerRequest;
 // Controller
 use App\Http\Controllers\Controller;
 // Resources
@@ -91,7 +92,7 @@ class CustomerController extends Controller
      */
     public function update(UpdateCustomerRequest $request, Customer $customer)
     {
-        //
+        $customer->update($request->all());
     }
 
     /**
