@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use Illuminate\Http\Request;
+
 // Model
 use App\Models\Customer;
 // Request
@@ -12,17 +14,29 @@ use App\Http\Controllers\Controller;
 // Resources
 use App\Http\Resources\V1\CustomerCollection;
 use App\Http\Resources\V1\CustomerResource;
+// Services
+use App\Services\V1\CustomerQuery;
 
 class CustomerController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //return Customer::all();
+        $filter = new CustomerQuery();
+        $queryItems = $filter->transform($request);     // [['column', 'operator', 'value']]
+
+        // check if the query is empty
+        if (count($queryItems) === 0) {
+            return new CustomerCollection(Customer::paginate());
+        } else {
+            return new CustomerCollection(Customer::where($queryItems)->paginate());
+        }
+
+        // return Customer::all();
         // without the need of define the CustomerCollection will take the format defined in CustomerResource
-        return new CustomerCollection(Customer::paginate());
+        // return new CustomerCollection(Customer::paginate());
     }
 
     /**
