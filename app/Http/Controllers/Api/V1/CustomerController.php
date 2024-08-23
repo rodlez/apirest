@@ -14,8 +14,8 @@ use App\Http\Controllers\Controller;
 // Resources
 use App\Http\Resources\V1\CustomerCollection;
 use App\Http\Resources\V1\CustomerResource;
-// Services
-use App\Services\V1\CustomerQuery;
+// Filters
+use App\Filters\V1\CustomersFilter;
 
 class CustomerController extends Controller
 {
@@ -24,7 +24,7 @@ class CustomerController extends Controller
      */
     public function index(Request $request)
     {
-        $filter = new CustomerQuery();
+        $filter = new CustomersFilter();
         $queryItems = $filter->transform($request);     // [['column', 'operator', 'value']]
 
         // check if the query is empty
