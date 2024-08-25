@@ -17,6 +17,9 @@ use App\Http\Resources\V1\CustomerCollection;
 use App\Http\Resources\V1\CustomerResource;
 // Filters
 use App\Filters\V1\CustomersFilter;
+// Test Error
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CustomerController extends Controller
 {
@@ -92,7 +95,22 @@ class CustomerController extends Controller
      */
     public function update(UpdateCustomerRequest $request, Customer $customer)
     {
-        $customer->update($request->all());
+
+        try {
+            $customer->update($request->all());
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Customer successfully updated',
+                'data' => $customer
+            ], 200);
+        } catch (ModelNotFoundException $exception) {
+            return response()->json([
+                'status' => true,
+                'message' => 'Customer can NOT be updated.',
+                'errors' => $exception->getMessage()
+            ], 400);
+        }
     }
 
     /**
@@ -100,6 +118,21 @@ class CustomerController extends Controller
      */
     public function destroy(Customer $customer)
     {
-        //
+
+        try {
+            $customer->delete();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Customer successfully deleted',
+                'data' => $customer
+            ], 200);
+        } catch (ModelNotFoundException $exception) {
+            return response()->json([
+                'status' => true,
+                'message' => 'Customer can NOT be deleted.',
+                'errors' => $exception->getMessage()
+            ], 400);
+        }
     }
 }
